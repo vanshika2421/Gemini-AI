@@ -114,26 +114,42 @@ const copyMessage = (copyIcon) =>{
     setTimeout(() => copyIcon.innerText = "content_copy", 1000);
 } 
 
-const handleOutgoingChat = () =>{
+const handleOutgoingChat = () => {
     userMessage = typingForm.querySelector(".typing-input").value.trim();
-    if(!userMessage) return;  // exit if there is no message
+    if (!userMessage) return; // exit if there is no message
 
-    // console.log(userMessage);
-    const html = `<div
-    class="message-content">
-                <img src="user.jpg" alt="User Image" class="avatar">
-                <p class="text"></p> 
-            </div>`;
+    // Create outgoing user message
+    const html = `<div class="message-content">
+                    <img src="user.jpg" alt="User Image" class="avatar">
+                    <p class="text"></p> 
+                </div>`;
 
-        const outgoingMessageDiv = createMessageElement(html, "outgoing");
-        outgoingMessageDiv.querySelector(".text").innerText = userMessage;
-        chatList.appendChild(outgoingMessageDiv);
+    const outgoingMessageDiv = createMessageElement(html, "outgoing");
+    outgoingMessageDiv.querySelector(".text").innerText = userMessage;
+    chatList.appendChild(outgoingMessageDiv);
 
-        typingForm.reset();
-        chatList.scrollTo(0,chatList.scrollHeight);
-        document.body.classList.add("hide-header");
-        setTimeout(showLoadingAnimation,500); //show loading animation after a delay
-    }
+    // 👇 Sentiment Analysis Logic
+    const sentiment = new Sentiment();
+    const result = sentiment.analyze(userMessage);
+    let sentimentLabel = "Neutral";
+    if (result.score > 0) sentimentLabel = "Positive";
+    else if (result.score < 0) sentimentLabel = "Negative";
+
+    // Display sentiment
+    const sentimentTag = document.createElement("div");
+    sentimentTag.innerText = `Sentiment: ${sentimentLabel} (Score: ${result.score})`;
+    sentimentTag.style.fontSize = "12px";
+    sentimentTag.style.marginTop = "2px";
+    sentimentTag.style.color = result.score > 0 ? "green" : result.score < 0 ? "red" : "gray";
+    outgoingMessageDiv.appendChild(sentimentTag);
+
+    // Continue with Gemini flow
+    typingForm.reset();
+    chatList.scrollTo(0, chatList.scrollHeight);
+    document.body.classList.add("hide-header");
+    setTimeout(showLoadingAnimation, 500); // Show Gemini response after delay
+}
+
 // toggle between light and dark themes
 toggleThemeButton.addEventListener("click" , () => {
    const isLightMode = document.body.classList.toggle("light_mode");
