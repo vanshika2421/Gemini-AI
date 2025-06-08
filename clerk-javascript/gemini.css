@@ -71,6 +71,24 @@ body.hide-header .header{
     font-size: 2.4rem;
     color:var(--subheading-color);
 }
+
+.tone-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: var(--text-color); /* if you use a theme color */
+}
+
+.tone-dropdown {
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
 .suggestion-list{
     margin-top: 9.5vh;
     list-style: none;
